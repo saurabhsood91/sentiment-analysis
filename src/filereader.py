@@ -36,7 +36,7 @@ class FileReader(object):
                     split_array = line.split()
                     id = split_array[0]
                     # print id
-                    review = "".join(split_array[1:])
+                    review = " ".join(split_array[1:])
                     # print review
                     review = self.RemovePunctuation(review)
                     self.reviews[id] = {
@@ -45,3 +45,31 @@ class FileReader(object):
                     }
                     # print self.reviews[id]
             return self.reviews
+
+    def GenerateCounts(self):
+        # Generate counts
+        self.bag_of_words = {}
+        for id, review_object in self.reviews.iteritems():
+            # split the review into words
+            # print review_object
+            review = review_object["review"]
+            # print review
+            review_words = review.split()
+            # generate a set of words
+            review_words_set = set(review_words)
+            # for each word in the set generate counts for the word
+            for word in review_words_set:
+                # count word in review
+                count = review_words.count(word)
+                # if the word is in the bag of words, update count
+                if word in self.bag_of_words:
+                    self.bag_of_words[word] += count
+                else:
+                    self.bag_of_words[word] = count
+        print self.bag_of_words
+
+
+# if __name__ == "__main__":
+#     a = FileReader("training_data/hotelPosT-train.txt", "positive")
+#     a.ParseFile()
+#     a.GenerateCounts()
