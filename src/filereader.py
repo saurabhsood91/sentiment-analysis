@@ -8,6 +8,10 @@ class FileReader(object):
         # Set the sentiment
         self.sentiment = sentiment
 
+        # Initialize empty dicts
+        self.reviews = {}
+        self.bag_of_words = {}
+
     def SetFile(self, filename):
         # To set the filename
         self.filename = filename
@@ -28,7 +32,6 @@ class FileReader(object):
 
     def ParseFile(self):
         # Parse the file and create the dict
-        self.reviews = {}
         if self.filename != None:
             with open(self.filename, "rb") as training_file:
                 for line in training_file:
@@ -48,7 +51,6 @@ class FileReader(object):
 
     def GenerateCounts(self):
         # Generate counts
-        self.bag_of_words = {}
         for id, review_object in self.reviews.iteritems():
             # split the review into words
             # print review_object
@@ -66,10 +68,14 @@ class FileReader(object):
                     self.bag_of_words[word] += count
                 else:
                     self.bag_of_words[word] = count
-        print self.bag_of_words
-
+        # print self.bag_of_words
+        return self.bag_of_words
 
 # if __name__ == "__main__":
 #     a = FileReader("training_data/hotelPosT-train.txt", "positive")
 #     a.ParseFile()
-#     a.GenerateCounts()
+#     print a.GenerateCounts()
+    # a.SetFile("training_data/hoteNegT-train.txt")
+    # a.SetSentiment("negative")
+    # a.ParseFile()
+    # print a.GenerateCounts()
