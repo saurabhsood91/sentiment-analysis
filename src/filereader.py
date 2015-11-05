@@ -10,7 +10,6 @@ class FileReader(object):
 
         # Initialize empty dicts
         self.reviews = {}
-        self.bag_of_words = {}
 
     def SetFile(self, filename):
         # To set the filename
@@ -31,6 +30,7 @@ class FileReader(object):
         return str
 
     def ParseFile(self):
+        self.reviews = {}
         # Parse the file and create the dict
         if self.filename != None:
             with open(self.filename, "rb") as training_file:
@@ -50,6 +50,7 @@ class FileReader(object):
             return self.reviews
 
     def GenerateCounts(self):
+        self.bag_of_words = {}
         # Generate counts
         for id, review_object in self.reviews.iteritems():
             # split the review into words
