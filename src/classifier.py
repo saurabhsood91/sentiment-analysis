@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from math import log
 from filereader import FileReader
 
 class NaiveBayesClassifier(object):
@@ -47,7 +48,31 @@ class NaiveBayesClassifier(object):
         reviews = test_file_reader.ParseFile()
 
         # Iterate over the reviews in the test set
-        for review in reviews.iteritems():
+        for id, review in reviews.iteritems():
             # print review
             # split the review into words
-            pass
+            review_words = review["review"].split()
+            # print review_words
+            # For each word in the review calculate a probability
+            # use add-1 smoothing
+            positive_probability = 0
+            negative_probability = 0
+            # print self.total_word_type_count
+            # print self.positive_word_count
+            # print self.negative_word_count
+            for word in review_words:
+                # if word is in the positive wordlist
+                if word in self.positive_words:
+                    # print self.bag_of_words[word]
+                    positive_probability += log(self.bag_of_words[word] + 1) - (log(self.total_word_type_count + self.positive_word_count))
+                    negative_probability += log(self.bag_of_words[word] + 1) - (log(self.total_word_type_count + self.negative_word_count))
+                else:
+                    # just use the count as 1
+                    positive_probability += 0 - log(self.total_word_type_count + self.positive_word_count)
+                    negative_probability += 0 - log(self.total_word_type_count + self.negative_word_count)
+            # print positive_probability
+            # print negative_probability
+            if positive_probability < negative_probability:
+                print "Positive"
+            else:
+                print "Negative"
