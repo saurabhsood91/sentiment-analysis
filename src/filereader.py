@@ -70,6 +70,7 @@ class FileReader(object):
             review = review_object["review"]
             # print review
             review_words = review.split()
+            self.word_count += len(review_words)
             # generate a set of words
             review_words_set = set(review_words)
             # for each word in the set generate counts for the word
@@ -80,7 +81,7 @@ class FileReader(object):
                     continue
                 # count word in review
                 count = review_words.count(word)
-                self.word_count += count
+                # self.word_count += len(rev)
                 # if the word is in the bag of words, update count
                 if word in self.bag_of_words:
                     self.bag_of_words[word] += count
