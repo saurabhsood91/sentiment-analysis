@@ -36,6 +36,8 @@ class FileReader(object):
         str = str.replace(";", "")
         str = str.replace("/", "")
         str = str.replace("-", "")
+        str = str.replace("!", "")
+        str = str.lower()
         return str
 
     def ParseFile(self):
