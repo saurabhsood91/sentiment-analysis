@@ -43,7 +43,16 @@ class NaiveBayesClassifier(object):
         for id, review in reviews.iteritems():
             # print review
             # split the review into words
-            review_words = review["review"].split()
+            cur_review = review["review"]
+            cur_review = cur_review.replace(",", "")
+            cur_review = cur_review.replace(".", "")
+            cur_review = cur_review.replace(";", "")
+            cur_review = cur_review.replace(";", "")
+            cur_review = cur_review.replace("/", "")
+            cur_review = cur_review.replace("-", "")
+            cur_review = cur_review.replace("!", "")
+            cur_review = cur_review.lower()
+            review_words = cur_review.split()
             # print review_words
             # For each word in the review calculate a probability
             # use add-1 smoothing
