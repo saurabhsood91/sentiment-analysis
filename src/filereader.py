@@ -19,6 +19,9 @@ class FileReader(object):
         # Set the sentiment
         self.sentiment = sentiment
 
+    def GetWordCount(self):
+        return self.word_count
+
     def RemovePunctuation(self, str):
         # Remove commas, full stops, semicolons, /, hyphens
         str = str.replace(",", "")
@@ -51,6 +54,7 @@ class FileReader(object):
 
     def GenerateCounts(self):
         self.bag_of_words = {}
+        self.word_count = 0
         # Generate counts
         for id, review_object in self.reviews.iteritems():
             # split the review into words
@@ -64,12 +68,14 @@ class FileReader(object):
             for word in review_words_set:
                 # count word in review
                 count = review_words.count(word)
+                self.word_count += count
                 # if the word is in the bag of words, update count
                 if word in self.bag_of_words:
                     self.bag_of_words[word] += count
                 else:
                     self.bag_of_words[word] = count
         # print self.bag_of_words
+        # print self.word_count
         return self.bag_of_words
 
 # if __name__ == "__main__":

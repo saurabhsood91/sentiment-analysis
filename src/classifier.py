@@ -8,22 +8,14 @@ class NaiveBayesClassifier(object):
         self.filereader = FileReader(positive_file, "positive")
         self.filereader.ParseFile()
         self.positive_words = self.filereader.GenerateCounts()
+        self.positive_word_count = self.filereader.GetWordCount()
         # Parse negative reviews
         self.filereader.SetFile(negative_file)
         self.filereader.SetSentiment("negative")
         self.filereader.ParseFile()
         self.negative_words = self.filereader.GenerateCounts()
+        self.negative_word_count = self.filereader.GetWordCount()
         self.MergeCounts()
-
-        # Compute word count of positive words
-        self.positive_word_count = 0
-        self.negative_word_count = 0
-        for word, count in self.positive_words.iteritems():
-            self.positive_word_count += count
-        for word, count in self.negative_words.iteritems():
-            self.negative_word_count += count
-        # print self.positive_word_count
-        # print self.negative_word_count
 
     def MergeCounts(self):
         # set bag of words to initially be positive words
@@ -57,22 +49,20 @@ class NaiveBayesClassifier(object):
             # use add-1 smoothing
             positive_probability = 0
             negative_probability = 0
-            # print self.total_word_type_count
-            # print self.positive_word_count
-            # print self.negative_word_count
             for word in review_words:
                 # if word is in the positive wordlist
                 if word in self.positive_words:
                     # print self.bag_of_words[word]
                     positive_probability += log(self.bag_of_words[word] + 1) - (log(self.total_word_type_count + self.positive_word_count))
-                    negative_probability += log(self.bag_of_words[word] + 1) - (log(self.total_word_type_count + self.negative_word_count))
                 else:
                     # just use the count as 1
                     positive_probability += 0 - log(self.total_word_type_count + self.positive_word_count)
+                if word in self.negative_words:
+                    negative_probability += log(self.bag_of_words[word] + 1) - (log(self.total_word_type_count + self.negative_word_count))
+                else:
                     negative_probability += 0 - log(self.total_word_type_count + self.negative_word_count)
-            # print positive_probability
-            # print negative_probability
-            if positive_probability < negative_probability:
+
+            if positive_probability > negative_probability:
                 print "Positive"
             else:
                 print "Negative"
