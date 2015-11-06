@@ -11,6 +11,12 @@ class FileReader(object):
         # Initialize empty dicts
         self.reviews = {}
 
+        # Read the stop words
+        self.stop_words = []
+        with open("stop-word-list.txt", "rb") as stopwordfile:
+            for line in stopwordfile:
+                self.stop_words.append(line.strip())
+
     def SetFile(self, filename):
         # To set the filename
         self.filename = filename
@@ -66,6 +72,10 @@ class FileReader(object):
             review_words_set = set(review_words)
             # for each word in the set generate counts for the word
             for word in review_words_set:
+                # if word is in the list of stop words skip the word
+                if word in self.stop_words:
+                    # print word, " in stop words"
+                    continue
                 # count word in review
                 count = review_words.count(word)
                 self.word_count += count
@@ -75,7 +85,7 @@ class FileReader(object):
                 else:
                     self.bag_of_words[word] = count
         # print self.bag_of_words
-        # print self.word_count
+        print self.word_count
         return self.bag_of_words
 
 # if __name__ == "__main__":
