@@ -1,5 +1,7 @@
 #! /usr/bin/python
 # This module parses the file and creates a dict of all reviews
+from collections import Counter
+import re
 
 class FileReader(object):
     def __init__(self, filename, sentiment=None):
@@ -27,24 +29,28 @@ class FileReader(object):
 
     def GetWordCount(self):
         return self.word_count
+    def GetReviews(self):
+        return self.reviews
 
     def RemovePunctuation(self, str):
         # Remove commas, full stops, semicolons, /, hyphens
-        str = str.replace(",", "")
-        str = str.replace(".", "")
-        str = str.replace(";", "")
-        str = str.replace(";", "")
-        str = str.replace("/", "")
-        str = str.replace("-", "")
-        str = str.replace("!", "")
+        str = str.replace(",", " ")
+        str = str.replace(".", " ")
+        str = str.replace(";", " ")
+        str = str.replace(";", " ")
+        str = str.replace("/", " ")
+        str = str.replace("-", " ")
+        str = str.replace("!", " ")
         str = str.lower()
         return str
 
     def ParseFile(self):
         self.reviews = {}
+        self.word_count = 0
         # Parse the file and create the dict
         if self.filename != None:
             with open(self.filename, "rb") as training_file:
+                str = ""
                 for line in training_file:
                     # Get ID
                     split_array = line.split()
@@ -55,47 +61,11 @@ class FileReader(object):
                     review = self.RemovePunctuation(review)
                     self.reviews[id] = {
                     "review": review,
+                    "id": id,
                     "sentiment": self.sentiment
                     }
-                    # print self.reviews[id]
-            return self.reviews
-
-    def GenerateCounts(self):
-        self.bag_of_words = {}
-        self.word_count = 0
-        # Generate counts
-        for id, review_object in self.reviews.iteritems():
-            # split the review into words
-            # print review_object
-            review = review_object["review"]
-            # print review
-            review_words = review.split()
-            self.word_count += len(review_words)
-            # generate a set of words
-            review_words_set = set(review_words)
-            # for each word in the set generate counts for the word
-            for word in review_words_set:
-                # if word is in the list of stop words skip the word
-                if word in self.stop_words:
-                    # print word, " in stop words"
-                    continue
-                # count word in review
-                count = review_words.count(word)
-                # self.word_count += len(rev)
-                # if the word is in the bag of words, update count
-                if word in self.bag_of_words:
-                    self.bag_of_words[word] += count
-                else:
-                    self.bag_of_words[word] = count
-        # print self.bag_of_words
-        print self.word_count
-        return self.bag_of_words
-
-# if __name__ == "__main__":
-#     a = FileReader("training_data/hotelPosT-train.txt", "positive")
-#     a.ParseFile()
-#     print a.GenerateCounts()
-    # a.SetFile("training_data/hoteNegT-train.txt")
-    # a.SetSentiment("negative")
-    # a.ParseFile()
-    # print a.GenerateCounts()
+                    str += review
+                words = re.findall(r'\w+', str)
+                self.word_count += len(words)
+                cnt = Counter(words)
+            return cnt
